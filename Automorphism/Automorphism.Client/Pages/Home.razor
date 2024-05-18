@@ -1,0 +1,43 @@
+﻿@page "/"
+@using Automorphism.Client.Data
+
+@inject HttpClient Http
+
+<PageTitle>
+    @PageTitle
+</PageTitle>
+
+<h3>
+    @PageTitle
+</h3>
+
+<div>
+    <p>
+        Current Number: @automorphismData?.CurrentNumber
+    </p>
+    <ul>
+        @foreach (var finding in automorphismData?.Findings ?? Enumerable.Empty<string>())
+        {
+            <li>
+                @finding
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    private const string PageTitle = "Automorphism Data";
+
+    private AutomorphismData? automorphismData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchAutomorphismData();
+    }
+
+    private async Task FetchAutomorphismData()
+    {
+        automorphismData = await Http.GetFromJsonAsync<AutomorphismData>("/api/automorphismdata");
+        StateHasChanged();
+    }
+}
